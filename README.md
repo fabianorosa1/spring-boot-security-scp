@@ -12,6 +12,13 @@ The microservice is a Spring boot version of the code developed in the [openSAP 
 > Note: The new `SAP Java Client Security Library` validates the access token, which is in JSON Web Token format, locally (offline). For verifying the signature of the access token it periodically retrieves and caches the JSON Web Keys (JWK) from the Authorization Server.
 As consequence, in order to test our Spring Boot application locally, or as part of our JUnit tests, we have to provide a Mock Web Server that mocks the `/token_keys` endpoint that returns JWKs. Thus, this sample starts and configures a Mock Web Server for the OAuth 2.0 Authorization Server as explained [here](https://github.com/spring-projects/spring-security/tree/master/samples/boot/oauth2resourceserver). The mock server is only started in case the `uaamock` Spring profile is active.
 
+## Build and deploy
+https://blogs.sap.com/2019/12/02/cloudfoundryfun-10-partial-deployments-to-cloud-foundry/
+
+mbt build -p=cf
+cf deploy spring-boot-security-scp_1.0.6.mtar
+cf deploy spring-boot-security-scp_1.0.6.mtar -m  spring-boot-security-scp-backend
+
 ## Using App Health Checks
 https://docs.cloudfoundry.org/devguide/deploy-apps/healthchecks.html#health_check_timeout
 
