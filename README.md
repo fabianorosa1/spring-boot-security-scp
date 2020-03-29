@@ -25,8 +25,9 @@ https://docs.cloudfoundry.org/devguide/deploy-apps/healthchecks.html#health_chec
 APP_GUID=$(cf app --guid spring-boot-security-scp-backend)
 PROCESS=$(cf curl "/v3/apps/${APP_GUID}/processes/web")
 HEALTH_OBJECT=$(echo "${PROCESS}" | jq '{"health_check":.health_check}')
-NEW_HEALTH_OBJECT=$(echo "${HEALTH_OBJECT}" | jq '.health_check.data.timeout |= 100')
 echo "${PROCESS}"
+NEW_HEALTH_OBJECT=$(echo "${HEALTH_OBJECT}" | jq '.health_check.data.timeout |= 100')
+echo "${HEALTH_OBJECT}"
 PROCESS_GUID=$(echo "${PROCESS}" | jq -r '.guid')
 echo "${PROCESS_GUID}"
 cf curl -X PATCH -H "Content-Type: application/json" -d "${NEW_HEALTH_OBJECT}" "/v3/processes/${PROCESS_GUID}"

@@ -1,6 +1,6 @@
 ID: spring-boot-security-scp
 _schema-version: '3'
-version: 1.0.6
+version: 1.0.8
 
 modules:
   - name: spring-boot-security-scp-db
@@ -20,7 +20,7 @@ modules:
       disk-quota: 256M
       #health-check-type: http
       #health-check-http-endpoint: /healthcheck
-      #health-check-timeout: 60
+      #health-check-timeout: 100
     provides:
      - name: nodeapi_api
        properties:
@@ -38,7 +38,7 @@ modules:
       buildpack: sap_java_buildpack
       health-check-type: http
       health-check-http-endpoint: /actuator/health
-      health-check-timeout: 60
+      health-check-timeout: 100
       JBP_CONFIG_SPRING_AUTO_RECONFIGURATION: '{enabled: false}'
     provides:
       - name: backend_api

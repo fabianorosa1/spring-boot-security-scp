@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "my.sample.Advertisement")
+@Table(name = "MY_SAMPLE_ADVERTISEMENT")
 public class Advertisement extends BaseEntity {
     /**
      ** technical fields

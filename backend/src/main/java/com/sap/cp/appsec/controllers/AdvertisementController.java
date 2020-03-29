@@ -1,27 +1,15 @@
 package com.sap.cp.appsec.controllers;
 
-import static com.sap.cp.appsec.security.AdvertisementSpecificationBuilder.confidentialityIsEqualOrLess;
 import static com.sap.cp.appsec.security.AdvertisementSpecificationBuilder.hasId;
 import static com.sap.cp.appsec.security.AdvertisementSpecificationBuilder.isCreatedBy;
 import static org.springframework.data.jpa.domain.Specification.where;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
+import java.util.Optional;
+
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 
-import java.util.Optional;
-
-import com.sap.cloud.security.xsuaa.token.SpringSecurityContext;
-import com.sap.cloud.security.xsuaa.token.Token;
-import com.sap.cp.appsec.domain.Advertisement;
-import com.sap.cp.appsec.domain.AdvertisementRepository;
-import com.sap.cp.appsec.domain.ConfidentialityLevel;
-import com.sap.cp.appsec.dto.AdvertisementDto;
-import com.sap.cp.appsec.dto.AdvertisementListDto;
-import com.sap.cp.appsec.dto.PageHeaderBuilder;
-import com.sap.cp.appsec.exceptions.BadRequestException;
-import com.sap.cp.appsec.exceptions.NotAuthorizedException;
-import com.sap.cp.appsec.exceptions.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -46,6 +34,18 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import com.sap.cloud.security.xsuaa.token.SpringSecurityContext;
+import com.sap.cloud.security.xsuaa.token.Token;
+import com.sap.cp.appsec.domain.Advertisement;
+import com.sap.cp.appsec.domain.AdvertisementRepository;
+import com.sap.cp.appsec.domain.ConfidentialityLevel;
+import com.sap.cp.appsec.dto.AdvertisementDto;
+import com.sap.cp.appsec.dto.AdvertisementListDto;
+import com.sap.cp.appsec.dto.PageHeaderBuilder;
+import com.sap.cp.appsec.exceptions.BadRequestException;
+import com.sap.cp.appsec.exceptions.NotAuthorizedException;
+import com.sap.cp.appsec.exceptions.NotFoundException;
 
 @RequestScope
 @RestController
@@ -85,10 +85,12 @@ public class AdvertisementController {
 
         AdvertisementDto savedAdvertisement = new AdvertisementDto(adsRepo.save(advertisement.toEntity()));
         logger.trace("created ad with version {}", savedAdvertisement.metadata.version);
+        
         UriComponents uriComponents = uriComponentsBuilder.path(PATH + "/{id}")
                 .buildAndExpand(savedAdvertisement.getId());
         HttpHeaders headers = new HttpHeaders();
         headers.setLocation(uriComponents.toUri());
+        
         return new ResponseEntity<>(savedAdvertisement, headers, HttpStatus.CREATED);
     }
 
@@ -106,6 +108,7 @@ public class AdvertisementController {
     @GetMapping("/confidentiality/{confidentialityLevel}")
     public ResponseEntity<AdvertisementListDto> readByConfidentiality(
             @PathVariable("confidentialityLevel") String confidentialityLevel) {
+    	
         Page<Advertisement> page = adsRepo
                 .findAllByConfidentialityLevel(ConfidentialityLevel.valueOf(confidentialityLevel),
                         PageRequest.of(FIRST_PAGE_ID, DEFAULT_PAGE_SIZE));
@@ -116,10 +119,10 @@ public class AdvertisementController {
 
     @GetMapping("/pages/{pageId}")
     public ResponseEntity<AdvertisementListDto> readPage(@PathVariable("pageId") int pageId) {
+    	
         Token jwtToken = SpringSecurityContext.getToken();
         Page<Advertisement> page = adsRepo
-                .findAll(where(isCreatedBy(jwtToken.getLogonName()).or(confidentialityIsEqualOrLess(
-                        jwtToken.getXSUserAttribute(ConfidentialityLevel.ATTRIBUTE_NAME)))),
+                .findAll(where(isCreatedBy(jwtToken.getLogonName())),
                         PageRequest.of(pageId, DEFAULT_PAGE_SIZE));
 
         return new ResponseEntity<>(new AdvertisementListDto(page.getContent()),
@@ -128,21 +131,21 @@ public class AdvertisementController {
 
     @GetMapping("/{id}")
     public AdvertisementDto readById(@PathVariable("id") @Min(0) Long id) {
+    	
         MDC.put("endpoint", "GET: " + PATH + "/" + id);
         Token jwtToken = SpringSecurityContext.getToken();
 
         // here we apply a filter on database leveraging Spring Data JPA: isCreatedBy or hasAttributeValue
         // find further info here: https://docs.spring.io/spring-data/jpa/docs/current/reference/html/
         Optional<Advertisement> advertisement = adsRepo
-                .findOne(where(hasId(id).and(isCreatedBy(jwtToken.getLogonName())).or(
-                        confidentialityIsEqualOrLess(
-                                jwtToken.getXSUserAttribute(ConfidentialityLevel.ATTRIBUTE_NAME)))));
+                .findOne(where(hasId(id).and(isCreatedBy(jwtToken.getLogonName()))));
 
         if (advertisement.isPresent()) {
             logger.trace("returning: {}", advertisement.get());
             return new AdvertisementDto(advertisement.get());
         }
         throwNonexisting(id);
+        
         return null;
     }
 
@@ -151,6 +154,7 @@ public class AdvertisementController {
         throwIfInconsistent(id, updatedAdvertisement.getId());
         throwIfNonexisting(id);
         logger.trace("updated ad with version {}", updatedAdvertisement.metadata.version);
+        
         return new AdvertisementDto(adsRepo.save(updatedAdvertisement.toEntity()));
     }
 
