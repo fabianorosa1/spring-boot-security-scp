@@ -1,0 +1,63 @@
+{
+  "xsappname": "spring-boot-security-scp",
+  "description": "spring-boot-security-scp application security config",
+  "tenant-mode": "dedicated",
+  "scopes": [
+    {
+      "name": "$XSAPPNAME.Display",
+      "description": "Display Advertisements"
+    },
+    {
+      "name": "$XSAPPNAME.Update",
+      "description": "Update Advertisements"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "ViewerPUBLIC",
+      "description": "View Advertisements",
+      "scope-references": [
+        "$XSAPPNAME.Display"
+      ]
+    },
+    {
+      "name": "AdvertiserPUBLIC",
+      "description": "Maintain Advertisements",
+      "scope-references": [
+        "$XSAPPNAME.Display",
+        "$XSAPPNAME.Update"
+      ]
+    },
+    {
+      "name": "AdvertiserALL",
+      "description": "Maintain Advertisements",
+      "scope-references": [
+        "$XSAPPNAME.Display",
+        "$XSAPPNAME.Update"
+      ]
+    }
+  ],
+  "role-collections": [
+    {
+      "name": "RC_ViewerPUBLIC",
+      "description": "Viewer (public)",
+      "role-template-references": [
+        "$XSAPPNAME.ViewerPUBLIC"
+      ]
+    },
+    {
+      "name": "RC_AdvertiserPUBLIC",
+      "description": "Advertiser (CRUD, public)",
+      "role-template-references": [
+        "$XSAPPNAME.AdvertiserPUBLIC"
+      ]
+    },
+    {
+      "name": "RC_AdvertiserALL",
+      "description": "Advertiser (CRUD, no restriction)",
+      "role-template-references": [
+        "$XSAPPNAME.AdvertiserALL"
+      ]
+    }
+  ]
+}

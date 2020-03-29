@@ -1,0 +1,32 @@
+{
+  "name": "nodeapi",
+  "description": "Node API",
+  "version": "1.0.0",
+  "main": "server.js",
+  "private": true,
+  "scripts": {
+    "test": "node node_modules/jest/bin/jest --config jest.json",
+    "test-coverage": "node node_modules/jest/bin/jest --coverage --config jest.json",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "10.x.x"
+  },
+  "dependencies": {
+    "@sap/cds": "3.18.4",
+    "@sap/xsenv": "^2.0.0",
+    "@sap/xssec": "^2.2.2",
+    "body-parser": "^1.19.0",
+    "cf-nodejs-logging-support": "^6.0.0",
+    "express": "^4.17.1",
+    "hdb": "^0.17.1",
+    "passport": "^0.4.0",
+    "uuid": "3.3.2",
+    "verror": "1.10.0",
+    "xlsx": "0.15.0"
+  },
+  "devDependencies": {
+    "jest": "^23.6.0",
+    "jest-junit": "^5.2.0"
+  }
+}

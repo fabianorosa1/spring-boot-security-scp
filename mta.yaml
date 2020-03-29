@@ -1,0 +1,96 @@
+ID: spring-boot-security-scp
+_schema-version: '3'
+version: 1.0.5
+
+modules:
+  - name: spring-boot-security-scp-db
+    type: hdb
+    path: db
+    parameters:
+      memory: 256M
+      disk-quota: 256M
+    requires:
+      - name: spring-boot-security-scp-hdi
+
+  - name: spring-boot-security-scp-nodeapi
+    type: nodejs
+    path: nodeapi
+    parameters:
+      memory: 128M
+      disk-quota: 256M
+      #health-check-type: http
+      #health-check-http-endpoint: /healthcheck
+      #health-check-timeout: 60
+    provides:
+     - name: nodeapi_api
+       properties:
+          url: ${default-url}
+    requires:
+      - name: spring-boot-security-scp-hdi
+      - name: spring-boot-security-scp-uaa
+      - name: spring-boot-security-scp-log
+
+  - name: spring-boot-security-scp-backend
+    type: java
+    path: backend
+    parameters:
+      memory: 512M
+      buildpack: sap_java_buildpack
+      health-check-type: http
+      health-check-http-endpoint: /actuator/health
+      health-check-timeout: 60
+      JBP_CONFIG_SPRING_AUTO_RECONFIGURATION: '{enabled: false}'
+    provides:
+      - name: backend_api
+        properties:
+          url: '${default-url}'
+    requires:
+      - name: spring-boot-security-scp-hdi
+      - name: spring-boot-security-scp-uaa
+      - name: spring-boot-security-scp-log
+    build-parameters:
+      build-result: 'target/*.jar'
+    properties:
+      SPRING_PROFILES_DEFAULT: cloud
+
+  - name: spring-boot-security-scp-approuter
+    type: approuter.nodejs
+    path: approuter
+    parameters:
+      disk-quota: 256M
+      memory: 256M
+    requires:
+      - name: spring-boot-security-scp-uaa
+      - name: backend_api
+        group: destinations
+        properties:
+           forwardAuthToken: true
+           name: backend_api
+           url: '~{url}'
+           strictSSL: false
+      - name: nodeapi_api
+        group: destinations
+        properties:
+           forwardAuthToken: true
+           name: nodeapi_api
+           url: '~{url}'
+           strictSSL: false
+
+resources:
+  - name: spring-boot-security-scp-hdi
+    type: com.sap.xs.hdi-container
+    properties:
+      hdi-container-name: '${service-name}'
+
+  - name: spring-boot-security-scp-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: application
+      service: xsuaa
+      path: ./security/xs-security.json
+
+  - name: spring-boot-security-scp-log
+    type: org.cloudfoundry.managed-service
+    parameters:
+     service: application-logs
+     service-plan: lite
