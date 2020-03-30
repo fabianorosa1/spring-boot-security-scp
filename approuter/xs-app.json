@@ -6,11 +6,15 @@
         "destination": "backend_api",
         "scope": "$XSAPPNAME.Display",
         "csrfProtection": false
-    }, {
+      }, {
         "source": "^/ads",
         "target": "/",
         "destination": "backend_api"
-    }, {
+      }, {
+          "source": "^/test",
+          "target": "$1",
+          "destination": "backend_api"
+      }, {
         "source": "^/nodeapi/(.*)$",
         "target": "$1",
         "destination": "nodeapi_api"

@@ -18,8 +18,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 @Configuration
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableWebSecurity(debug = true) // TODO "debug" may include sensitive information. Do not use in a production system!
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
@@ -43,13 +43,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(PUT, "/api/v1/ads/**").hasAuthority("Update")
                 .antMatchers(GET, "/api/v1/attribute/**").permitAll()
                 .antMatchers("/api/v1/**").authenticated()
+                .antMatchers("/test/**").authenticated()
                 .antMatchers("/").authenticated()
                 .antMatchers("/actuator/**").permitAll()
                 .antMatchers("/hystrix.stream").permitAll()
                 .anyRequest().denyAll() // deny anything not configured above
             .and()
-                .oauth2ResourceServer().jwt()
-					.jwtAuthenticationConverter(getJwtAuthoritiesConverter());
+                .oauth2ResourceServer()
+                .jwt()
+				.jwtAuthenticationConverter(getJwtAuthoritiesConverter());
 	}
 
 	/**
