@@ -20,8 +20,8 @@ mvn spring-boot:run
 https://blogs.sap.com/2019/12/02/cloudfoundryfun-10-partial-deployments-to-cloud-foundry/
 
 mbt build -p=cf
-cf deploy spring-boot-security-scp_1.0.9.mtar
-cf deploy spring-boot-security-scp_1.0.9.mtar -m  spring-boot-security-scp-backend
+cf deploy spring-boot-security-scp_1.0.10.mtar
+cf deploy spring-boot-security-scp_1.0.10.mtar -m  spring-boot-security-scp-approuter
 
 ## Using App Health Checks
 https://docs.cloudfoundry.org/devguide/deploy-apps/healthchecks.html#health_check_timeout

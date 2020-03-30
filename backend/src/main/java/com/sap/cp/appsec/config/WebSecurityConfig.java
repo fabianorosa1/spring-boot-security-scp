@@ -18,7 +18,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 @Configuration
-@EnableWebSecurity(debug = true) // TODO "debug" may include sensitive information. Do not use in a production system!
+//@EnableWebSecurity(debug = true) // TODO "debug" may include sensitive information. Do not use in a production system!
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 

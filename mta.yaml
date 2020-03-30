@@ -1,6 +1,6 @@
 ID: spring-boot-security-scp
 _schema-version: '3'
-version: 1.0.9
+version: 1.0.10
 
 modules:
   - name: spring-boot-security-scp-db

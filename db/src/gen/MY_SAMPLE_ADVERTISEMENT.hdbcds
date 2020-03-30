@@ -7,6 +7,6 @@ entity MY_SAMPLE_ADVERTISEMENT {
   key ID : Integer;
   TITLE : String(5000);
   CONTACT : String(5000);
-  CCONFIDENTIALITY_LEVEL : String(5000);
+  CONFIDENTIALITY_LEVEL : String(5000);
   VERSION : Integer;
 };

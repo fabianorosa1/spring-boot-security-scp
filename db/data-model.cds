@@ -5,6 +5,6 @@ entity Advertisement: managed {
   key id : Integer;
   title  : String;
   contact  : String;
-  cconfidentiality_level : String;
+  confidentiality_level : String;
   version  : Integer;
 }

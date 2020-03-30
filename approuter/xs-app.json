@@ -11,7 +11,7 @@
         "target": "/",
         "destination": "backend_api"
       }, {
-          "source": "^/test",
+          "source": "^/test/(.*)$",
           "target": "$1",
           "destination": "backend_api"
       }, {
