@@ -1,6 +1,8 @@
 ID: spring-boot-security-scp
-_schema-version: '3'
-version: 1.0.10
+_schema-version: 3.3.0
+version: 1.0.12
+parameters:
+  enable-parallel-deployments: true
 
 modules:
   - name: spring-boot-security-scp-db
@@ -26,13 +28,15 @@ modules:
        properties:
           url: ${default-url}
     requires:
-      - name: spring-boot-security-scp-hdi
+      #- name: spring-boot-security-scp-hdi
       - name: spring-boot-security-scp-uaa
       - name: spring-boot-security-scp-log
 
   - name: spring-boot-security-scp-backend
     type: java
     path: backend
+    deployed-after:
+      - spring-boot-security-scp-db 
     parameters:
       memory: 1024M
       buildpack: sap_java_buildpack
