@@ -1,0 +1,26 @@
+{
+  "name": "nodejob",
+  "description": "Node JOB",
+  "version": "1.0.0",
+  "main": "server.js",
+  "private": true,
+  "scripts": {
+    "test": "node node_modules/jest/bin/jest --config jest.json",
+    "test-coverage": "node node_modules/jest/bin/jest --coverage --config jest.json",
+    "start": "node server.js",
+    "job_db": "node job_db.js"
+  },
+  "engines": {
+    "node": "10.x.x"
+  },
+  "dependencies": {
+    "@sap/hana-client": "^2.4.191",
+    "@sap/xsenv": "^2.0.0",
+    "cf-nodejs-logging-support": "^6.0.0",
+    "express": "^4.17.1"
+  },
+  "devDependencies": {
+    "jest": "^23.6.0",
+    "jest-junit": "^5.2.0"
+  }
+}

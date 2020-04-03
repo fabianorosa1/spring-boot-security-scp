@@ -1,6 +1,6 @@
 ID: spring-boot-security-scp
 _schema-version: 3.3.0
-version: 1.0.12
+version: 1.0.14
 parameters:
   enable-parallel-deployments: true
 
@@ -18,7 +18,7 @@ modules:
     type: nodejs
     path: nodeapi
     parameters:
-      memory: 128M
+      memory: 256M
       disk-quota: 256M
       #health-check-type: http
       #health-check-http-endpoint: /healthcheck
@@ -31,6 +31,17 @@ modules:
       #- name: spring-boot-security-scp-hdi
       - name: spring-boot-security-scp-uaa
       - name: spring-boot-security-scp-log
+
+  - name: spring-boot-security-scp-nodejob
+    type: nodejs
+    path: nodejob
+    parameters:
+      memory: 256M
+      disk-quota: 512M
+    requires:
+      - name: spring-boot-security-scp-hdi
+      - name: spring-boot-security-scp-log
+      - name: spring-boot-security-scp-job
 
   - name: spring-boot-security-scp-backend
     type: java
@@ -98,3 +109,9 @@ resources:
     parameters:
      service: application-logs
      service-plan: lite
+
+  - name: spring-boot-security-scp-job
+    type: org.cloudfoundry.managed-service
+    parameters:
+     service: jobscheduler
+     service-plan: standard

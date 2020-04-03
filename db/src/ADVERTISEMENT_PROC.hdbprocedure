@@ -1,0 +1,11 @@
+procedure "ADVERTISEMENT_PROC" (in inVal int, out outVal int)
+  language sqlscript
+  SQL SECURITY INVOKER
+  --reads sql data 
+as
+  begin
+    update MY_SAMPLE_ADVERTISEMENT 
+    set MODIFIEDBY = 'JOB-' || inVal, MODIFIEDAT = CURRENT_TIMESTAMP;
+
+    SELECT ::ROWCOUNT INTO outVal FROM DUMMY;
+  end
